@@ -1,4 +1,4 @@
-# curiousMoon
+# thinkPython2Solutions
 
 This project contains my personal solutions to the exercises and questions in the book: 
 
