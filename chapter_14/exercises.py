@@ -3,6 +3,7 @@ import time
 import string
 import dbm 
 import pickle
+import hashlib
 
 
 
@@ -19,8 +20,11 @@ def showFiles(directory = os.getcwd()):
        output: prints list of strings with parent directory and corresponding
                filenames
     '''
+    pathlist = []
     for dirpath, dirnames, filenames in os.walk(directory):
-        print([dirpath,filenames])
+        for filenm in filenames:
+            pathlist.append(dirpath+'/'+filenm)
+    return pathlist
 
 ################################
 # Exercise 14-1
@@ -65,14 +69,86 @@ def sed(pattern, replacement, filein, fileout):
         fout.close()
     except:
         print('cannot close <fileout>')
+        
+################################
+# Exercise 14-3
+################################
+
+def find_suffix(pathlist, suffix = '.exe'):
+    '''Takes a list of pathnames and recursively searches for a given extension
+       uses:   os
+       Input:  parent directory
+       Output: filenames with the correct extension
+    '''
+    rightsuffix = []
+    for path in pathlist:
+        splittie = [os.path.splitext(path)]
+        for prefix, extension in splittie:
+            if extension == suffix:
+                rightsuffix.append(path)
+    return rightsuffix
+
+def filePairs(pathlist):
+    '''Takes a list of pathnames and searches for double file names. Returns a
+       list of path pair tuples. 
+       Uses: os
+       Input: <pathlist> list of paths to files you want checked.
+       Output: list of <path>, <same filename> doubles.
+    '''
+    splitlist = [] 
+    pairs = []
+    for path in pathlist:
+        splitlist.append(os.path.split(path))
+    for i in range(len(splitlist)):
+        for j in range(i+1,len(splitlist)):
+            print(splitlist[i][1], splitlist[j][1])
+            if splitlist[i][1] == splitlist[j][1]:
+                pairs.append((splitlist[i][0]+'/'+splitlist[i][1],splitlist[j][0]+'/'+splitlist[j][1]))          
+    return pairs
+
+def comparemd5(pairlist):
+    '''compares two files for equality.
+       Input: list of file pairs (tuple)
+       Output list of file p
+    '''   
+    for file1, file2 in pairlist:
+        file1 = file1.replace(' ','\ ')
+        file2 = file2.replace(' ','\ ')
+        cmd1 = 'md5sum ' + file1
+        cmd2 = 'md5sum ' + file2
+        fp1 = os.popen(cmd1)
+        res1 = fp1.read()
+        stat1 = fp1.close()
+        fp2 = os.popen(cmd2)
+        res2 = fp2.read()
+        stat2 = fp2.close()
+        txt = "Are they the same? {result}!!!   ".format(result = res1.split()[0] == res2.split()[0])
+        print(file1, file2)
+        print(txt,res1.split()[0], res2.split()[0])
+
+def comparediff(pairlist):
+    '''compares two files for equality.
+       Input: list of file pairs (tuple)
+       Output list of file p
+    '''   
+    for file1, file2 in pairlist:
+        file1 = file1.replace(' ','\ ')
+        file2 = file2.replace(' ','\ ')
+        cmd1 = 'diff ' + file1 + ' ' + file2
+        fp1 = os.popen(cmd1)
+        res1 = fp1.read()
+        stat1 = fp1.close()
+        print('differences for ',file1, file2)
+        print(res1)
+
 
 if __name__ == '__main__':
 
     ################################
     # Chapter 14, in-text exercises and playing
     ################################
-    directory = '/home/esther/Nextcloud/Defolderwaarjeallesinhebtstaan/IT Treasury'
-    showFiles(directory)
+    directory = '/home/esther/Nextcloud/Defolderwaarjeallesinhebtstaan/IT Treasury/pythonCourse/thinkpython'
+    print(showFiles(directory))
     
     #try dbm
     #db = dbm.open('captions','c')
@@ -96,6 +172,9 @@ if __name__ == '__main__':
     print(res)
     print(stat)
     
+    ################################
+    # Chapter 14-1
+    ################################
     # E 14-1 try things that work and that raise an exception
     
     print('--- Should Work -------------------------------------')
@@ -113,4 +192,16 @@ if __name__ == '__main__':
     print('--- Bad Fileout -------------------------------------')
     sed('i', 'CATS', 'fish.txt', 3)    #fileout is bogus
     print('-----------------------------------------------------')
-
+    
+    ################################
+    # Chapter 14-3, compage path names
+    ################################
+    allfiles = showFiles(directory)
+    filestocheck = find_suffix(allfiles, '.py')
+    filepairlist = filePairs(filestocheck)
+    comparemd5(filepairlist)
+    comparediff(filepairlist)
+    
+    
+    
+    
