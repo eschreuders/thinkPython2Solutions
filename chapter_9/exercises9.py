@@ -3,7 +3,7 @@
 # Exercise 9-1
 #
 
-fin = open("words.txt")
+fin = open("../words.txt")
 for line in fin:
     word = line.strip()
     if len(word) > 20:
@@ -19,7 +19,7 @@ print(bool)
 def has_no_e(s):
     return 'e' in s
 
-fin = open("words.txt")
+fin = open("../words.txt")
 countnoe = 0
 count = 0
 for line in fin:
@@ -43,7 +43,7 @@ def avoids(s, c):
 
 
 def find_combo(string):
-    fin = open("words.txt")
+    fin = open("../words.txt")
     countnoe = 0
     count = 0
     for line in fin:
@@ -64,7 +64,7 @@ print(find_combo("zxqjw"))
 
 def find_percentage():
     for letter in 'abcdefghijklmnopqrstuvwxyz':
-        fin = open("words.txt")
+        fin = open("../words.txt")
         countnoe = 0
         count = 0
         for line in fin:
@@ -109,7 +109,7 @@ def uses_all(word, string):
 
 
 def find_combo_use(string):
-    fin = open("words.txt")
+    fin = open("../words.txt")
     countnoe = 0
     count = 0
     for line in fin:
@@ -136,7 +136,7 @@ def is_abecedarian(word):
     return True
 
 def find_combo_abc():
-    fin = open("words.txt")
+    fin = open("../words.txt")
     countnoe = 0
     count = 0
     for line in fin:
@@ -163,7 +163,7 @@ def cartalk(word):
     return False
     
 def find_cartalk():
-    fin = open("words.txt")
+    fin = open("../words.txt")
     countnoe = 0
     count = 0
     for line in fin:

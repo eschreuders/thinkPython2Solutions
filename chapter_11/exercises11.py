@@ -43,14 +43,14 @@ def eng_dictionary():
        returns: worddict, dictionary of strings in file words.txt as keys and 
        True as values.
     '''
-    fin = open("words.txt")
+    fin = open("../words.txt")
     worddict = dict()
     for line in fin:
         worddict[line.strip()] = True
     return worddict
 
 def append_words():
-    fin = open("words.txt")
+    fin = open("../words.txt")
     wordlist = []
     for line in fin:
         wordlist.append(line.strip())

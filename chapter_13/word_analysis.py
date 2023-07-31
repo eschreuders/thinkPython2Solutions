@@ -91,7 +91,7 @@ def word_analysis(words):
         data[uword].append(data[uword][0]/data[uword][1]) #ratio of total word count
     return data
     
-def append_words(filename="words.txt"):
+def append_words(filename="../words.txt"):
     '''Opens a txt file of words, strips and returns a list of them
        takes: words.txt located in same path as this script.
        returns: list of cleaned words.
@@ -293,7 +293,7 @@ def most_common(hist):
        hist: dictionary with words as keys and frequencies as values.       
     '''
     t = []
-    for key, value in hist.items(): s
+    for key, value in hist.items():\00s
         t.append((value, key))
     t.sort(reverse=True)
     return t

@@ -62,7 +62,7 @@ print(hist_letters(nederlands))
 # Exercise 12-2
 #
 
-def append_words(filename="words.txt"):
+def append_words(filename="../words.txt"):
     '''Opens a txt file of words, strips and returns a list of them
        takes: words.txt located in same path as this script.
        returns: list of cleaned words.

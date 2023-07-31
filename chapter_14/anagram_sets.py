@@ -91,7 +91,7 @@ def filter_length(d, n):
 
 
 if __name__ == '__main__':
-    anagram_map = all_anagrams('words.txt')
+    anagram_map = all_anagrams("../words.txt")
     print_anagram_sets_in_order(anagram_map)
 
     eight_letters = filter_length(anagram_map, 8)

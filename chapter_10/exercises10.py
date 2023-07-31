@@ -178,7 +178,7 @@ print("odds of same birthdays in 23 size class: ", birthday_paradox(23,10000) )
 
 
 def append_words():
-    fin = open("words.txt")
+    fin = open("../words.txt")
     wordlist = []
     for line in fin:
         wordlist += [line.strip()]
@@ -186,7 +186,7 @@ def append_words():
     
     
 def append_words2():
-    fin = open("words.txt")
+    fin = open("../words.txt")
     wordlist = []
     for line in fin:
         wordlist.append(line.strip())
