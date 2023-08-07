@@ -286,5 +286,5 @@ if __name__ == '__main__':
     double_date("1/3/1967","4/3/1967",2)
     
     print('\ngoing to calculate double dates')
-    double_date("24/11/1998","9/6/2018",3)
+    double_date("24/11/1989","9/6/2018",3)
     
