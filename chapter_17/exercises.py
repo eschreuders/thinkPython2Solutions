@@ -103,16 +103,18 @@ class Point:
 def print_attributes(obj):
     for attr in vars(obj):
         print(attr, getattr(obj, attr))        
-        
-here = Point(2,3)
-there = Point(8,-1)
-tupie = (12, 5)
-print('here: ', here)
-print('there: ', there)
-print('tuple: ', tupie)
-print(here + there)
 
-print("Here comes the special addition!")
-print(here + tupie)
+if __name__ == '__main__':
+        
+    here = Point(2,3)
+    there = Point(8,-1)
+    tupie = (12, 5)
+    print('here: ', here)
+    print('there: ', there)
+    print('tuple: ', tupie)
+    print(here + there)
+
+    print("Here comes the special addition!")
+    print(here + tupie)
 
 print_attributes(there)
