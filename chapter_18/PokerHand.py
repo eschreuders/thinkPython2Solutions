@@ -45,7 +45,7 @@ class PokerHand(Hand):
         if not hasattr(self, 'ranks'):
             self.rank_hist()
         for val in self.ranks.values():
-            if val == 2:
+            if val >= 2:
                 return True
         return False        
     
@@ -83,19 +83,19 @@ class PokerHand(Hand):
         for card in self.cards:
             ranknums.append(card.rank)
         ranknums = sorted(ranknums)
+        if ranknums[0] == 1:
+            ranknums.append(14)
         print('rank numbers: ', ranknums)
         for i in range(len(ranknums)-1):
             if ranknums[i] == (ranknums[i+1]-1):
                 count += 1
             elif ranknums[i] == (ranknums[i+1]):
                 count += 0
-            #ace can be number 14 if there's a king:
-            elif ranknums[0] == 1 and ranknums[i+1] == 13:
-                count += 1
             else:
                 count = 0
-            if count == 5:
+            if count == 4:
                 return True
+            print(i, count)
         return False
 
     def has_flush(self):
@@ -118,10 +118,10 @@ class PokerHand(Hand):
         if not hasattr(self, 'ranks'):
             self.rank_hist()
         for val in self.ranks.values():
-            if val > 2 and not three:
-                three = True
             if val > 2 and three:
                 two = True
+            if val > 2 and not three:
+                three = True
             if val == 2:
                 two = True
         return two and three
@@ -133,7 +133,7 @@ class PokerHand(Hand):
         if not hasattr(self, 'ranks'):
             self.rank_hist()
         for val in self.ranks.values():
-            if val >= 4:
+            if val == 4:
                 return True
         return False 
         
@@ -142,44 +142,100 @@ class PokerHand(Hand):
       
         """
         count = 0
-        ranknums = []
+        ranknums = [[],[],[],[]]
         for card in self.cards:
-            ranknums.append(int(str(card.suit) + '{:02}'.format(card.rank)))
-        ranknums = sorted(ranknums)
-        print('Suit and rank numbers', ranknums)
-        for i in range(len(ranknums)-1):
-            if ranknums[i] == (ranknums[i+1]-1):
-                count += 1
-            elif ranknums[i] == (ranknums[i+1]):
-                count += 0
-            #ace can be number 14 if there's a king:
-            elif ranknums[0] == 1 and ranknums[i+1] == 13:
-                count += 1
-            else:
+            ranknums[card.suit].append(card.rank)
+        for i in range(3):
+            testing = ranknums[i]
+            if len(testing) >= 5:
                 count = 0
-            if count == 5:
-                return True
+                testing = sorted(testing)
+                print('Suit and rank numbers', testing)
+                for i in range(len(testing)-1):
+                    if testing[i] == (testing[i+1]-1):
+                        count += 1
+                    elif testing[i] == (testing[i+1]):
+                        count += 0
+                    else:
+                        count = 0
+                    if count == 4:
+                        return True
+                    print(i, count)
         return False
         
-if __name__ == '__main__':
-    # make a deck
+        
+        
+    def classify(self):
+        self.label = 'nothing'
+        if self.has_pair():
+            self.label = 'pair'
+        if self.has_twopair():
+            self.label = 'two pair'
+        if self.has_threeofakind():
+            self.label = 'three of a kind'
+        if self.has_straight():
+            self.label = 'straight'
+        if self.has_flush():
+            self.label = 'flush'
+        if self.has_fullhouse():
+            self.label = 'full house'
+        if self.has_fourofakind():
+            self.label = 'four of a kind'
+        if self.has_straightflush():
+            self.label = 'straight flush'                                                
+        
+def deal_and_classify(ncard=5, nhand = 5):
+    '''Creates a deck of cards, shuffles, hands out n hands and classifies
+       Returns a dictionary of classifications and occurrences.      
+    '''   
+    pokerHands = {}
     deck = Deck()
     deck.shuffle()
-
-    # deal the cards and classify the hands
-    for i in range(7):
+    for i in range(nhand):
         hand = PokerHand()
-        deck.move_cards(hand, 7)
-        hand.sort()
-        print(hand)
-        print('Pair:            ', hand.has_pair())
-        print('Two pair:        ', hand.has_twopair())
-        print('Three of a kind: ', hand.has_threeofakind())
-        print('Straight:        ', hand.has_straight())
-        print('Flush:           ', hand.has_flush())
-        print('Full house:      ', hand.has_fullhouse())
-        print('Four of a kind:  ', hand.has_fourofakind())
-        print('Straight flush:  ', hand.has_straightflush())
-        print('')
-
+        deck.move_cards(hand, ncard)
+        hand.classify()
+        pokerHands[hand.label] = pokerHands.get(hand.label, 0) + 1
+    return pokerHands
+        
+def poker_sampling(nsamp=10, nhand = 5, ncard = 5):
+    currentClassify      = {'nothing':0, 
+                            'pair':0, 
+                            'two pair':0, 
+                            'three of a kind':0, 
+                            'straight':0, 
+                            'flush':0, 
+                            'full house':0, 
+                            'four of a kind':0, 
+                            'straight flush':0}
+    for i in range(nsamp):
+        iteration = deal_and_classify(ncard, nhand)
+        for key in iteration | currentClassify:
+            currentClassify[key] = iteration.get(key,0) + currentClassify.get(key,0)
+    print('')
+    print('SAMPLING POKERHANDS')
+    print('===================')
+    print('sample size: {}    hands per deck: {}'.format(nhand * nsamp, nhand))
+    print('===================')
+    print('classification in numbers:')
+    print(currentClassify)
+    for key in currentClassify:
+        currentClassify[key]= currentClassify[key] / (nhand*nsamp)            
+    print('')
+    print('classification ratio of {} samples:'.format(nhand * nsamp))
+    print(print_dict(currentClassify))
+    
+def print_dict(diction):
+    txt = []
+    for key in diction:
+        txt.append('{} : {:.3f}'.format(key, diction[key]))
+    return '\n'.join(txt)
+    
+    
+if __name__ == '__main__':
+        
+    print(poker_sampling(20000,5, 5))
+            
+            
+         
 
